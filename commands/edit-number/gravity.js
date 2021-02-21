@@ -1,7 +1,7 @@
 const Command = require('../../structures/Command');
 const { list, firstUpperCase, formatNumber } = require('../../util/Util');
-const planets = require('../../assets/json/gravity');
-
+const { planets } = require('../../assets/json/planet');
+const { MessageEmbed } = require('discord.js');
 module.exports = class GravityCommand extends Command {
 	constructor(client) {
 		super(client, {
@@ -26,18 +26,29 @@ module.exports = class GravityCommand extends Command {
 				},
 				{
 					key: 'planet',
-					label: 'celestial object',
-					prompt: `What celestial object do you want to use? Either ${list(Object.keys(planets), 'or')}.`,
+					prompt: 'What planet do you want to find? You can enter the name, symbol, or atomic number.',
 					type: 'string',
-					oneOf: Object.keys(planets),
-					parse: planet => planet.toLowerCase()
+					validate: planet => {
+						const search = planet.toString().toLowerCase();
+						if (planets.find(a => a.name.toLowerCase() === search || a.link.toLowerCase() === search)) return true;
+						return 'Invalid planet, please enter a valid planet symbol, name, or atomic number.';
+					},
+					parse: planet => {
+						const search = planet.toLowerCase();
+						return planets.find(a => a.name.toLowerCase() === search);
+					}
 				}
 			]
 		});
 	}
 
 	run(msg, { weight, planet }) {
-		const result = weight * planets[planet];
-		return msg.say(`${formatNumber(weight)} kg on ${firstUpperCase(planet)} is ${formatNumber(result)} kg.`);
+		const embed = new MessageEmbed()
+			.setTitle('Gravity Calculator')
+			.setColor(msg.guild.me.displayHexColor)
+			.setImage(planet.image)
+			.setDescription(`${formatNumber(weight)} kg on ${firstUpperCase(planet)} is ${formatNumber(result)} kg.`)
+		const result = weight * planet.gravity;
+		return msg.say(embed)
 	}
 };
