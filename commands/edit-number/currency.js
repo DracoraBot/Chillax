@@ -1,6 +1,7 @@
 const Command = require('../../structures/Command');
 const request = require('node-superfetch');
 const { formatNumber } = require('../../util/Util');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = class CurrencyCommand extends Command {
 	constructor(client) {
@@ -46,10 +47,16 @@ module.exports = class CurrencyCommand extends Command {
 	}
 
 	async run(msg, { base, target, amount }) {
+
 		if (base === target) return msg.say(`Converting ${base} to ${target} is the same value, dummy.`);
 		try {
 			const rate = await this.fetchRate(base, target);
-			return msg.say(`${formatNumber(amount)} ${base} is ${formatNumber(amount * rate)} ${target}.`);
+			const embed = new MessageEmbed()
+				.setTitle('Currency Convert')
+				.setColor(msg.guild.me.displayHexColor)
+				.setDescription(`**${formatNumber(amount)} ${base}** converts to **${formatNumber(amount * rate)} ${target}**.\n\nExchange Rate: ${rate}`)
+				.setFooter('Powered by exchangeratesapi.io');
+            msg.say(embed);
 		} catch (err) {
 			if (err.status === 400) return msg.say('Invalid base/target.');
 			return msg.reply(`Oh no, an error occurred: \`${err.message}\`. Try again later!`);
