@@ -100,7 +100,7 @@ module.exports = class BattleCommand extends Command {
 				} else if (msgs.first().content == text) {
 					await msg.say(`${battle.attacker} regenerated **${regen}** MP`);
 					battle.attacker.giveMP(regen);
-					battle.reset();
+					battle.reset(false);
                 }
 				} else if (choice === 'final') {
 					await msg.say(`${battle.attacker} uses their final move, dealing **100** damage!`);
