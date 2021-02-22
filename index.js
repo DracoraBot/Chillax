@@ -154,7 +154,21 @@ client.on('ready', async () => {
 		}
 	}, 1.8e+6);
 });
-
+/*
+//client.statusHook = new Discord.WebhookClient(WEBHOOK_ID, WEBHOOK_TOKEN);
+client.on('shardReady', async shard => {
+	//client.statusHook.send(`Shard **#${shard}** ready on **${client.guilds.cache.size}** servers and ${client.users.cache.size}** users.`)
+	console.log(`Shard **#${shard}** ready on **${client.guilds.cache.size}** servers and ${client.users.cache.size}** users.`);
+});
+client.on('shardDisconnect', async shard => {
+	//client.statusHook.send(`Shard **${shard}** disconnected from its servers and users temporarily...`)
+	console.log(`Shard **${shard}** disconnected from its servers and users temporarily...`)
+});
+client.on('shardResume', async shard => {
+	//client.statusHook.send(`Shard **#${shard}** succesfully reconnected to **${client.guilds.cache.size}** servers and **${client.users.cache.size}** users.`)
+	console.log(`Shard **#${shard}** succesfully reconnected to **${client.guilds.cache.size}** servers and **${client.users.cache.size}** users.`)
+});
+*/
 client.on('message', async msg => {
 	const hasText = Boolean(msg.content);
 	const hasImage = msg.attachments.size !== 0;
@@ -235,6 +249,15 @@ client.on('guildMemberRemove', async member => {
 	} catch {
 		return null;
 	}
+});
+
+client.on('voiceStateUpdate', (oldState, newState) => {
+	if (newState.id !== client.user.id || oldState.id !== client.user.id) return;
+	if (newState.channel) return;
+	const dispatcher = client.dispatchers.get(oldState.guild.id);
+	if (!dispatcher) return;
+	dispatcher.end();
+	client.dispatchers.delete(oldState.guild.id);
 });
 
 client.on('disconnect', event => {
