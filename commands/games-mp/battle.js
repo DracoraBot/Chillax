@@ -1,7 +1,8 @@
 const Command = require('../../structures/Command');
 const Battle = require('../../structures/battle/Battle');
 const { randomRange, verify } = require('../../util/Util');
-
+const { createCanvas } = require('canvas');
+const pool = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ23456789'.split('');
 module.exports = class BattleCommand extends Command {
 	constructor(client) {
 		super(client, {
@@ -37,6 +38,18 @@ module.exports = class BattleCommand extends Command {
 				}
 			}
 			while (!battle.winner) {
+
+				const canvas = createCanvas(125, 32);
+				const ctx = canvas.getContext('2d');
+				const text = this.randomText(5);
+				ctx.fillStyle = 'white';
+				ctx.fillRect(0, 0, canvas.width, canvas.height);
+				ctx.beginPath();
+				ctx.strokeStyle = '#0088cc';
+				ctx.font = this.client.fonts.get('Captcha.ttf').toCanvasString(26);
+				ctx.rotate(-0.05);
+				ctx.strokeText(text, 15, 26);
+
 				const choice = await battle.attacker.chooseAction(msg);
 				if (choice === 'attack') {
 					const damage = randomRange(battle.defender.guard ? 5 : 20, battle.defender.guard ? 20 : 50);
@@ -69,10 +82,26 @@ module.exports = class BattleCommand extends Command {
 					battle.attacker.useMP(battle.attacker.mp);
 					battle.reset();
 				} else if (choice === 'regen') {
-					const regen = Math.round(battle.attacker.hp / 10);
+					const regen = 50;
+					await msg.reply(
+						'**You have 15 seconds, Cap Sensitive!**',
+						{ files: [{ attachment: canvas.toBuffer(), name: 'captcha-quiz.png' }] }
+					);
+					const msgs = await msg.channel.awaitMessages(res => res.author.id === msg.author.id, {
+						max: 1,
+						time: 15000
+					});
+                 if (!msgs.size) {
+					await msg.say(`Sorry, time is up! It was ${text}.`)
+					battle.reset();
+				} else if (msgs.first().content !== text) {
+					await msg.say(`Nope, sorry, it's ${text}.`)
+					battle.reset();
+				} else if (msgs.first().content == text) {
 					await msg.say(`${battle.attacker} regenerated **${regen}** MP`);
 					battle.attacker.giveMP(regen);
 					battle.reset();
+                }
 				} else if (choice === 'final') {
 					await msg.say(`${battle.attacker} uses their final move, dealing **100** damage!`);
 					battle.defender.dealDamage(100);
@@ -103,5 +132,10 @@ module.exports = class BattleCommand extends Command {
 			this.client.games.delete(msg.channel.id);
 			throw err;
 		}
+	}
+	randomText(len) {
+		const result = [];
+		for (let i = 0; i < len; i++) result.push(pool[Math.floor(Math.random() * pool.length)]);
+		return result.join('');
 	}
 };
