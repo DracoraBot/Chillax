@@ -82,7 +82,7 @@ module.exports = class BattleCommand extends Command {
 					battle.attacker.useMP(battle.attacker.mp);
 					battle.reset();
 				} else if (choice === 'regen') {
-					const regen = 50;
+					const regen = Math.floor(Math.random() * 50) + 1;
 					await msg.reply(
 						'**You have 15 seconds, Cap Sensitive!**',
 						{ files: [{ attachment: canvas.toBuffer(), name: 'captcha-quiz.png' }] }

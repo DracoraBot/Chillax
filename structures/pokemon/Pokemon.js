@@ -9,7 +9,7 @@ module.exports = class Pokemon {
 	constructor(store, data) {
 		this.store = store;
 		this.id = data.id;
-		const slugName = firstUpperCase(data.name).replaceAll('-', ' ');
+		const slugName = firstUpperCase(data.name).replace(/-/g, ' ');
 		this.name = data.names.length
 			? data.names.find(entry => entry.language.name === 'en').name
 			: slugName;
@@ -34,7 +34,7 @@ module.exports = class Pokemon {
 		this.varieties = data.varieties.map(variety => {
 			const name = firstUpperCase(variety.pokemon.name
 				.replace(new RegExp(`${this.slug}-?`, 'i'), '')
-				.replaceAll('-', ' '));
+				.replace(/-/g, ' '));
 			return {
 				id: variety.pokemon.name,
 				name: name || null,

@@ -4,7 +4,7 @@ module.exports = class Move {
 	constructor(store, data) {
 		this.store = store;
 		this.id = data.id;
-		const slugName = firstUpperCase(data.name).replaceAll('-', ' ');
+		const slugName = firstUpperCase(data.name).replace(/-/g, ' ');
 		this.name = data.names.length
 			? data.names.find(entry => entry.language.name === 'en').name
 			: slugName;

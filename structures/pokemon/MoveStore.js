@@ -21,6 +21,6 @@ module.exports = class MoveStore extends Collection {
 	}
 
 	makeSlug(query) {
-		return encodeURIComponent(query.toLowerCase().replaceAll(' ', '-').replace(/[^a-zA-Z0-9-]/g, ''));
+		return encodeURIComponent(query.toLowerCase().replace(/ /g, '-').replace(/[^a-zA-Z0-9-]/g, ''));
 	}
 };
