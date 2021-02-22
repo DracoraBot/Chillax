@@ -41,6 +41,7 @@ module.exports = class UserCommand extends Command {
 
 	async run(msg, { user }) {
 		const userFlags = user.flags ? user.flags.toArray().filter(flag => !deprecated.includes(flag)) : [];
+		if (user.id === '677989508763090949') user.bot = 'yes';
 		const embed = new MessageEmbed()
 			.setThumbnail(user.displayAvatarURL({ format: 'png', dynamic: true }))
 			.setAuthor(user.tag)

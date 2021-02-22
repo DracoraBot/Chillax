@@ -181,6 +181,20 @@ module.exports = class Util {
 		return ((r << 16) | (g << 8) | b).toString(16);
 	}
 
+	static textDiff(oldText, newText) {
+		let changed = [];
+		return oldText.split('').map((char, i) => {
+			if (char === newText.charAt(i)) {
+				const chars = changed.length ? `**${changed.join('')}**${char}` : char;
+				if (changed.length) changed = [];
+				const extraText = newText.slice(oldText.length);
+				return i === oldText.length - 1 ? `${chars}${extraText.length ? `**${extraText}**` : ''}` : chars;
+			}
+			changed.push(newText.charAt(i));
+			return i === oldText.length - 1 ? `**${changed.join('')}${newText.slice(oldText.length)}**` : '';
+		}).join('');
+	}
+
 	static magikToBuffer(magik) {
 		return new Promise((res, rej) => {
 			magik.toBuffer((err, buffer) => {
@@ -198,10 +212,6 @@ module.exports = class Util {
 		if (guild) str = str.replace(inviteRegex, text);
 		if (bot) str = str.replace(botInvRegex, text);
 		return str;
-	}
-
-	static preventURLEmbeds(str) {
-		return str.replace(/(https?:\/\/\S+)/g, '<$1>');
 	}
 
 	static async reactIfAble(msg, user, emoji, fallbackEmoji) {
@@ -253,7 +263,7 @@ module.exports = class Util {
 		return arr[Number.parseInt(msgs.first().content, 10) - 1];
 	}
 
-	static async awaitPlayers(msg, max, min, blacklist) {
+	static async awaitPlayers(msg, max, min = 1) {
 		if (max === 1) return [msg.author.id];
 		const addS = min - 1 === 1 ? '' : 's';
 		await msg.say(
@@ -263,7 +273,6 @@ module.exports = class Util {
 		joined.push(msg.author.id);
 		const filter = res => {
 			if (res.author.bot) return false;
-			if (blacklist.includes(res.author.id)) return false;
 			if (joined.includes(res.author.id)) return false;
 			if (res.content.toLowerCase() !== 'join game') return false;
 			joined.push(res.author.id);
