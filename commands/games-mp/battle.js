@@ -68,6 +68,11 @@ module.exports = class BattleCommand extends Command {
 					battle.attacker.heal(amount);
 					battle.attacker.useMP(battle.attacker.mp);
 					battle.reset();
+				} else if (choice === 'regen') {
+					const regen = Math.round(battle.attacker.hp / 10);
+					await msg.say(`${battle.attacker} regenerated **${regen}** MP`);
+					battle.attacker.giveMP(regen);
+					battle.reset();
 				} else if (choice === 'final') {
 					await msg.say(`${battle.attacker} uses their final move, dealing **100** damage!`);
 					battle.defender.dealDamage(100);

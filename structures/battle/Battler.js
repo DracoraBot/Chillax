@@ -1,6 +1,6 @@
 const { stripIndents } = require('common-tags');
 const { list } = require('../../util/Util');
-const choices = ['attack', 'defend', 'special', 'cure', 'final', 'run'];
+const choices = ['attack', 'defend', 'special', 'cure', 'final', 'regen', 'run'];
 
 module.exports = class Battler {
 	constructor(battle, user) {
@@ -29,6 +29,7 @@ module.exports = class Battler {
 		if (this.battle.turn === 1 || this.battle.turn === 2) {
 			content += '\n\n_Special uses 25 MP whether or not it hits. Cure takes remaining MP and heals half that amount._';
 			content += '\n_To use Final, you must have under 100 HP and over 50 MP. Final can only be used once!_';
+			content += '\n_Battles may take up to 10 minutes.';
 		}
 		await msg.say(content);
 		const filter = res => {
@@ -62,6 +63,11 @@ module.exports = class Battler {
 	heal(amount) {
 		this.hp += amount;
 		return this.hp;
+	}
+
+	giveMP(amount) {
+		this.mp += amount;
+		return this.mp;
 	}
 
 	useMP(amount) {
