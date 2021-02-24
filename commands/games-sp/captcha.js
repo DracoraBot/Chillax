@@ -47,7 +47,7 @@ module.exports = class CaptchaCommand extends Command {
 		});
 		if (!msgs.size) return msg.reply(`Sorry, time is up! It was ${text}.`);
 		if (msgs.first().content !== text) return msg.reply(`Nope, sorry, it's ${text}.`);
-		return msg.reply('Nice job! 10/10! You deserve some cake!');
+		return msg.reply('You got the correct answer! Congradulations.');
 	}
 
 	randomText(len) {
