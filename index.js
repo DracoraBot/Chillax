@@ -77,19 +77,6 @@ client.on('ready', async () => {
 		client.user.setActivity(text, { type: activity.type });
 	}, 60000);
 
-	// Set up meme poster interval
-	/*
-	if (client.memePoster) {
-		client.setInterval(async () => {
-			try {
-				const post = await client.memePoster.fetchRandomPost(false);
-				await client.memePoster.post(post);
-			} catch (err) {
-				client.logger.error(err);
-			}
-		}, client.memePoster.postInterval);
-	}
-*/
 	// Import blacklist
 	try {
 		const results = client.importBlacklist();
@@ -154,21 +141,7 @@ client.on('ready', async () => {
 		}
 	}, 1.8e+6);
 });
-/*
-//client.statusHook = new Discord.WebhookClient(WEBHOOK_ID, WEBHOOK_TOKEN);
-client.on('shardReady', async shard => {
-	//client.statusHook.send(`Shard **#${shard}** ready on **${client.guilds.cache.size}** servers and ${client.users.cache.size}** users.`)
-	console.log(`Shard **#${shard}** ready on **${client.guilds.cache.size}** servers and ${client.users.cache.size}** users.`);
-});
-client.on('shardDisconnect', async shard => {
-	//client.statusHook.send(`Shard **${shard}** disconnected from its servers and users temporarily...`)
-	console.log(`Shard **${shard}** disconnected from its servers and users temporarily...`)
-});
-client.on('shardResume', async shard => {
-	//client.statusHook.send(`Shard **#${shard}** succesfully reconnected to **${client.guilds.cache.size}** servers and **${client.users.cache.size}** users.`)
-	console.log(`Shard **#${shard}** succesfully reconnected to **${client.guilds.cache.size}** servers and **${client.users.cache.size}** users.`)
-});
-*/
+
 client.on('message', async msg => {
 	const hasText = Boolean(msg.content);
 	const hasImage = msg.attachments.size !== 0;
