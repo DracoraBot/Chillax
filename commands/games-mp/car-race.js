@@ -3,6 +3,7 @@ const { createCanvas, loadImage } = require('canvas');
 const request = require('node-superfetch');
 const { stripIndents } = require('common-tags');
 const path = require('path');
+const db = require('quick.db');
 const { verify, list, randomRange } = require('../../util/Util');
 const { greyscale, motionBlur } = require('../../util/Canvas');
 const fs = require('fs');

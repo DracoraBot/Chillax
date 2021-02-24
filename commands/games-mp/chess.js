@@ -11,7 +11,7 @@ const { FAILURE_EMOJI_ID } = process.env;
 const turnRegex = /^(?:((?:[A-H][1-8])|(?:[PKRQBN]))?([A-H]|X)?([A-H][1-8])(?:=([QRNB]))?)|(?:0-0(?:-0)?)$/;
 const pieces = ['pawn', 'rook', 'knight', 'king', 'queen', 'bishop'];
 const cols = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
-
+const db = require('quick.db');
 module.exports = class ChessCommand extends Command {
 	constructor(client) {
 		super(client, {

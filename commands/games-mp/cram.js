@@ -5,7 +5,7 @@ const colors = require('../../assets/json/domineering');
 const blankEmoji = '⬜';
 const nums = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟'];
 const turnRegex = /^(v|h) ?(\d+), ?(\d+)/i;
-
+const db = require('quick.db');
 module.exports = class CramCommand extends Command {
 	constructor(client) {
 		super(client, {

@@ -6,7 +6,7 @@ const nums = require('../../assets/json/bingo');
 const { SUCCESS_EMOJI_ID } = process.env;
 const rows = Object.keys(nums);
 const callNums = Array.from({ length: 75 }, (v, i) => i + 1);
-
+const db = require('quick.db');
 module.exports = class BingoCommand extends Command {
 	constructor(client) {
 		super(client, {

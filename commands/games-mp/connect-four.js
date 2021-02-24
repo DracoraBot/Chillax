@@ -9,7 +9,7 @@ const nums = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', 
 const colors = require('../../assets/json/connect-four');
 colors.loading = `<a:loading:${LOADING_EMOJI_ID}>`;
 const customEmojiRegex = /^(?:<a?:([a-zA-Z0-9_]+):)?([0-9]+)>?$/;
-
+const db = require('quick.db');
 module.exports = class ConnectFourCommand extends Command {
 	constructor(client) {
 		super(client, {

@@ -1,7 +1,7 @@
 const Command = require('../../structures/Command');
 const Collection = require('@discordjs/collection');
 const { randomRange, verify, awaitPlayers } = require('../../util/Util');
-
+const db = require('quick.db');
 module.exports = class BalloonPopCommand extends Command {
 	constructor(client) {
 		super(client, {
