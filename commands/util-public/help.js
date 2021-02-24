@@ -60,7 +60,7 @@ module.exports = class HelpCommand extends Command {
 			try {
 				const msgs = [];
 				for (const embed of embeds) msgs.push(await msg.direct({ embed }));
-				if (msg.channel.type !== 'dm') msgs.push(await msg.say('📬 Sent you a DM with information.'));
+				if (msg.channel.type !== 'text') msgs.push(await msg.say('📬 Sent you a DM with information.'));
 				return msgs;
 			} catch {
 				return msg.reply('Failed to send DM. You probably have DMs disabled.');

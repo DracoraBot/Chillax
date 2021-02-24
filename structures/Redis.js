@@ -1,7 +1,7 @@
 const Redis = require('ioredis');
-const { REDIS_HOST, REDIS_PASS } = process.env;
+const { REDIS_HOST, REDIS_PASS, REDIS_PORT } = process.env;
 const redis = new Redis({
-	port: 6379,
+	port: REDIS_PORT,
 	host: REDIS_HOST,
 	enableReadyCheck: true,
 	password: REDIS_PASS,
