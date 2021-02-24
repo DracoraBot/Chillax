@@ -3,6 +3,7 @@ const Battle = require('../../structures/battle/Battle');
 const { randomRange, verify } = require('../../util/Util');
 const { createCanvas } = require('canvas');
 const pool = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ23456789'.split('');
+const db = require('quick.db');
 module.exports = class BattleCommand extends Command {
 	constructor(client) {
 		super(client, {
