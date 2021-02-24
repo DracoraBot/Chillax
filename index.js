@@ -145,6 +145,11 @@ client.on('ready', async () => {
 });
 
 client.on('message', async msg => {
+	if (msg.content.startsWith(CHILLAX_PREFIX)) {
+  const commandRan = await db.fetch(`commands_${msg.author.id}`);
+		if (commandRan === null) await db.set(`commands_${msg.author.id}`, 0)
+		db.add(`commands_${msg.author.id}`, 1);
+	} else {
 
 if (
 		(msg.content === `<@${client.user.id}>` || msg.content === `<@!${client.user.id}>`) &&
@@ -196,6 +201,7 @@ if (
 	} catch {
 		return; // eslint-disable-line no-useless-return
 	}
+}
 });
 
 client.on('guildCreate', async guild => {
@@ -284,16 +290,6 @@ client.on('commandRun', (msg, command) => {
 	command.uses++;
 	if (command.lastRun === undefined) return;
 	command.lastRun = new Date();
-	const commandRan = db.get(`commands_${msg.author.id}`);
-	const gameWon = db.get(`won_${msg.author.id}`);
-	const streak = db.get(`streak_${msg.author.id}`);
-
-		if (commandRan === null) db.set(`commands_${msg.author.id}`, 0);
-		if (gameWon === null) db.set(`won_${msg.author.id}`, 0);
-		if (streak === null) db.set(`streak_${msg.author.id}`, 0);
-
-	db.add(`commands_${msg.author.id}`, 1);
-
 });
 
 client.dispatcher.addInhibitor(msg => {
