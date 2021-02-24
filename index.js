@@ -2,14 +2,16 @@ require('dotenv').config();
 const { CHILLAX_TOKEN, OWNERS, CHILLAX_PREFIX, INVITE } = process.env;
 const path = require('path');
 const { Intents, MessageEmbed } = require('discord.js');
+const { oneLine } = require('common-tags');
 const Client = require('./structures/Client');
+const db = require('quick.db');
 const client = new Client({
 	commandPrefix: CHILLAX_PREFIX,
 	owner: OWNERS.split(','),
 	invite: INVITE,
 	disableMentions: 'everyone',
-	partials: ['GUILD_MEMBER'],
-	ws: { intents: [Intents.NON_PRIVILEGED, 'GUILD_MEMBERS'] }
+	partials: ['GUILD_MEMBER', 'GUILD_MESSAGES'],
+	ws: { intents: [Intents.NON_PRIVILEGED, 'GUILD_MEMBERS', 'GUILD_MESSAGES'] }
 });
 const { formatNumber } = require('./util/Util');
 
@@ -143,6 +145,39 @@ client.on('ready', async () => {
 });
 
 client.on('message', async msg => {
+
+if (
+		(msg.content === `<@${client.user.id}>` || msg.content === `<@!${client.user.id}>`) &&
+	msg.channel.permissionsFor(msg.guild.me).has(['SEND_MESSAGES', 'EMBED_LINKS'])
+) {
+	const embed = new MessageEmbed()
+		.setTitle('Hi, I\'m Chillax. Need help?')
+		.setThumbnail('https://static.wikia.nocookie.net/hunterxhunter/images/7/7c/Killua-2011.png')
+		.setDescription(`You can see everything I can do by using the \`${CHILLAX_PREFIX}help\` command.`)
+		.addField('Invite Me', oneLine`
+			You can add me to your server by clicking
+			[here](https://discord.com/api/oauth2/authorize?client_id=482995476187054110&permissions=8&scope=bot)!
+		`)
+		.addField('Support', oneLine`
+			If you have questions, suggestions, or found a bug, please join the
+			[Dracora Support Server](https://discord.gg/NuDZSSS)!
+		`)
+		.addField('Donations', oneLine`
+			You can donate to us and help us grow! Use
+			[Paypal](https://paypal.me/DracoraBot).
+		`)
+		/*
+		.addField('Website', oneLine`
+			For any further questions visit our [website](https://dracora.dev);
+		`)
+		*/
+		.addField('Patreon', oneLine`
+			Want to unlock more perks? Become a [Patreon](https://www.patreon.com/dracora)
+		`)
+		.setFooter('DM Dagger to speak directly with the developer!')
+		.setColor(msg.guild.me.displayHexColor);
+	return msg.channel.send(embed);
+}
 	const hasText = Boolean(msg.content);
 	const hasImage = msg.attachments.size !== 0;
 	const hasEmbed = msg.embeds.length !== 0;
@@ -244,11 +279,21 @@ client.on('error', err => client.logger.error(err.stack));
 
 client.on('warn', warn => client.logger.warn(warn));
 
-client.on('commandRun', command => {
+client.on('commandRun', (msg, command) => {
 	if (command.uses === undefined) return;
 	command.uses++;
 	if (command.lastRun === undefined) return;
 	command.lastRun = new Date();
+	const commandRan = db.get(`commands_${msg.author.id}`);
+	const gameWon = db.get(`won_${msg.author.id}`);
+	const streak = db.get(`streak_${msg.author.id}`);
+
+		if (commandRan === null) db.set(`commands_${msg.author.id}`, 0);
+		if (gameWon === null) db.set(`won_${msg.author.id}`, 0);
+		if (streak === null) db.set(`streak_${msg.author.id}`, 0);
+
+	db.add(`commands_${msg.author.id}`, 1);
+
 });
 
 client.dispatcher.addInhibitor(msg => {
