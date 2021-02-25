@@ -4,7 +4,7 @@ const { stripIndents } = require('common-tags');
 const { delay, verify } = require('../../util/Util');
 const startWords = require('../../assets/json/word-list');
 const { WEBSTER_KEY } = process.env;
-
+const db = require('quick.db');
 module.exports = class WordChainCommand extends Command {
 	constructor(client) {
 		super(client, {
@@ -103,6 +103,14 @@ module.exports = class WordChainCommand extends Command {
 			}
 			this.client.games.delete(msg.channel.id);
 			if (!winner) return msg.say('Oh... No one won.');
+			let loser = [];
+			if (winner.id === msg.author.id) loser = opponent.id;
+			if (winner.id === opponent.id) loser = msg.author.id;
+			db.add(`won_${winner.id}`, 1);
+			db.add(`streak_${winner.id}`, 1);
+			db.add(`played_${msg.author.id}`, 1);
+			db.add(`played_${opponent.id}`, 1);
+			db.set(`streak_${loser}`, 0);
 			return msg.say(`The game is over! The winner is ${winner}!`);
 		} catch (err) {
 			this.client.games.delete(msg.channel.id);

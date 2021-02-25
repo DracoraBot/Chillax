@@ -160,7 +160,14 @@ module.exports = class ConnectFourCommand extends Command {
 				userTurn = !userTurn;
 			}
 			this.client.games.delete(msg.channel.id);
+			let loser = [];
+			if (winner.id === msg.author.id) loser = opponent.id;
+			if (winner.id === opponent.id) loser = msg.author.id;
+
 			if (winner === 'time') return msg.say('Game ended due to inactivity.');
+			db.add(`won_${winner.id}`, 1);
+			db.add(`streak_${winner.id}`, 1);
+			db.set(`streak_${loser}`, 0);
 			return msg.say(stripIndents`
 				${winner ? `Congrats, ${winner}!` : 'Looks like it\'s a draw...'}
 				Final Move: **${lastMove}**

@@ -5,7 +5,7 @@ const Collection = require('@discordjs/collection');
 const { delay, awaitPlayers, shuffle, reactIfAble } = require('../../util/Util');
 const { SUCCESS_EMOJI_ID } = process.env;
 const choices = ['A', 'B', 'C', 'D'];
-
+const db = require('quick.db');
 module.exports = class QuizDuelCommand extends Command {
 	constructor(client) {
 		super(client, {
@@ -107,6 +107,14 @@ module.exports = class QuizDuelCommand extends Command {
 			}
 			this.client.games.delete(msg.channel.id);
 			const winner = pts.sort((a, b) => b.points - a.points).first().user;
+			let loser = [];
+			if (winner.id === msg.author.id) loser = opponent.id;
+			if (winner.id === opponent.id) loser = msg.author.id;
+			db.add(`won_${winner.id}`, 1);
+			db.add(`streak_${winner.id}`, 1);
+			db.add(`played_${msg.author.id}`, 1);
+			db.add(`played_${opponent.id}`, 1);
+			db.set(`streak_${loser}`, 0);
 			return msg.say(stripIndents`
 				Congrats, ${winner}!
 

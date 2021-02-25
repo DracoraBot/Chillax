@@ -1,7 +1,7 @@
 const Command = require('../../structures/Command');
 const { stripIndents } = require('common-tags');
 const { verify, fetchHSUserDisplay } = require('../../util/Util');
-
+const db = require('quick.db');
 module.exports = class TypingRaceCommand extends Command {
 	constructor(client) {
 		super(client, {
@@ -61,6 +61,14 @@ module.exports = class TypingRaceCommand extends Command {
 			this.client.games.delete(msg.channel.id);
 			if (!winner.size) return msg.say('Oh... No one won.');
 			const wpm = (sentence.length / 5) / ((newScore / 1000) / 60);
+			let loser = [];
+			if (winner.id === msg.author.id) loser = opponent.id;
+			if (winner.id === opponent.id) loser = msg.author.id;
+			db.add(`won_${winner.id}`, 1);
+			db.add(`streak_${winner.id}`, 1);
+			db.add(`played_${msg.author.id}`, 1);
+			db.add(`played_${opponent.id}`, 1);
+			db.set(`streak_${loser}`, 0);
 			return msg.say(stripIndents`
 				The winner is ${winner.first().author}! (Took ${newScore / 1000} seconds, ${Math.round(wpm)} WPM)
 				${scoreBeat ? `**New High Score!** Old:` : `High Score:`} ${highScore / 1000}s (Held by ${user})

@@ -1,7 +1,7 @@
 const Command = require('../../structures/Command');
 const { verify } = require('../../util/Util');
 const nums = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-
+const db = require('quick.db');
 module.exports = class PickANumberCommand extends Command {
 	constructor(client) {
 		super(client, {
@@ -78,6 +78,12 @@ module.exports = class PickANumberCommand extends Command {
 			const clientWin = clientOpp && this.client.user.id === winner.id;
 			this.client.games.delete(msg.channel.id);
 			return msg.say(`The number was **${num}**! ${clientWin ? 'I' : winner} win${clientWin ? '' : 's'}!`);
+			let loser = [];
+			if (winner.id === msg.author.id) loser = opponent.id;
+			if (winner.id === opponent.id) loser = msg.author.id;
+			db.add(`won_${winner.id}`, 1);
+			db.add(`streak_${winner.id}`, 1);
+			db.set(`streak_${loser}`, 0);
 		} catch (err) {
 			this.client.games.delete(msg.channel.id);
 			throw err;

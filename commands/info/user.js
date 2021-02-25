@@ -50,30 +50,34 @@ module.exports = class UserCommand extends Command {
 		const commandRan = db.get(`commands_${user.id}`);
 		const winStreak = db.get(`streak_${user.id}`);
 		const gamesWon = db.get(`won_${user.id}`);
+    const gamesPlayed = db.get(`played_${user.id}`);
+    const ratio = gamesWon/gamesPlayed;
+
+    const member = await msg.guild.members.fetch(user.id);
+    const defaultRole = msg.guild.roles.cache.get(msg.guild.id);
+    // Setup fields const
+    const serverJoinDate = moment.utc(member.joinedAt).format('MM/DD/YYYY h:mm A');
+    const discJoinDate = moment.utc(user.createdAt).format('MM/DD/YYYY h:mm A');
+    const highestRole = member.roles.highest.id === defaultRole.id ? 'None' : member.roles.highest.name;
+    const hoistRole = member.roles.hoist ? member.roles.hoist.name : 'None';
+    const userId = user.id;
+    const isBot = user.bot ? 'Yes' : 'No';
+
     if (commandRan === null) db.set(`commands_${user.id}`, 0);
+    if (gamesPlayed === null) db.set(`played_${user.id}`, 0);
 		const embed = new MessageEmbed()
-			.setThumbnail(user.displayAvatarURL({ format: 'png', dynamic: true }))
+			//.setThumbnail(user.displayAvatarURL({ format: 'png', dynamic: true }))
 			.setAuthor(user.tag)
-			.addField('❯ Discord Join Date', moment.utc(user.createdAt).format('MM/DD/YYYY h:mm A'), true)
-			.addField('❯ ID', user.id, true)
-			.addField('❯ Bot?', user.bot ? 'Yes' : 'No', true)
-			//.addField('❯ Flags', userFlags.length ? userFlags.map(flag => flags[flag]).join(', ') : 'None');
+			.addField('❯ Discord Information', `Joined: ${serverJoinDate}\nHighest: ${highestRole}\nHoist: ${hoistRole}`, true)
+			.addField('❯ User Information', `Username: ${user.username}\nDisc: ${user.discriminator}\nID: ${userId}\nJoined: ${discJoinDate}\n${user.bot ? 'Bot' : ''}`, true)
 		if (msg.guild) {
 			try {
-				const member = await msg.guild.members.fetch(user.id);
-				const defaultRole = msg.guild.roles.cache.get(msg.guild.id);
 				const roles = member.roles.cache
 					.filter(role => role.id !== defaultRole.id)
 					.sort((a, b) => b.position - a.position)
 					.map(role => role.name);
 				embed
-					.addField('❯ Server Join Date', moment.utc(member.joinedAt).format('MM/DD/YYYY h:mm A'), true)
-					.addField('❯ Highest Role',
-						member.roles.highest.id === defaultRole.id ? 'None' : member.roles.highest.name, true)
-					.addField('❯ Hoist Role', member.roles.hoist ? member.roles.hoist.name : 'None', true)
-					.addField('❯ Commands Ran', commandRan, true)
-					.addField('❯ Games Won', gamesWon, true)
-					.addField('❯ Current Streak', winStreak, true)
+          .addField('❯ Games Stats', `Commands: ${commandRan}\nGames Won: ${gamesWon}/${gamesPlayed}\nStreak: ${winStreak}\nRation: ${ratio.toFixed(2)}`, true)
 					.addField(`❯ Roles (${roles.length})`, roles.length ? trimArray(roles, 6).join(', ') : 'None')
 					.setColor(member.displayHexColor);
 					if (userFlags.length > 0) embed.addField('Badges', userFlags.map(flag => flags[flag]).join('\n'));

@@ -96,6 +96,8 @@ module.exports = class TicTacToeCommand extends Command {
 			if (winner === 'time') return msg.say('Game ended due to inactivity.');
 			db.add(`won_${winner.id}`, 1);
 			db.add(`streak_${winner.id}`, 1);
+			db.add(`played_${msg.author.id}`, 1);
+			db.add(`played_${opponent.id}`, 1);
 			db.set(`streak_${loser}`, 0);
 			return msg.say(stripIndents`
 				${winner === 'tie' ? 'Oh... The cat won.' : `Congrats, ${winner}!`}

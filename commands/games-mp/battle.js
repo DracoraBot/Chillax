@@ -127,8 +127,18 @@ module.exports = class BattleCommand extends Command {
 				if (choice !== 'failed:time' && battle.lastTurnTimeout) battle.lastTurnTimeout = false;
 			}
 			this.client.games.delete(msg.channel.id);
+			let loser = [];
+			if (winner.id === msg.author.id) loser = opponent.id;
+			if (winner.id === opponent.id) loser = msg.author.id;
+
 			if (battle.winner === 'time') return msg.say('Game ended due to inactivity.');
-			return msg.say(`The match is over! Congrats, ${battle.winner}!`);
+			db.add(`won_${winner.id}`, 1);
+			db.add(`streak_${winner.id}`, 1);
+			db.add(`played_${msg.author.id}`, 1);
+			db.add(`played_${opponent.id}`, 1);
+			db.set(`streak_${loser}`, 0);
+
+			return msg.say(`The match is over! Congrats, ${battle.winner}!`)
 		} catch (err) {
 			this.client.games.delete(msg.channel.id);
 			throw err;

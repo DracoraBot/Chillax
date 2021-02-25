@@ -7,7 +7,7 @@ const userEmoji = '❌';
 const oppoEmoji = '⭕';
 const nums = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟'];
 const turnRegex = /^(\d+), ?(\d+)/i;
-
+const db = require('quick.db');
 module.exports = class ObstructionCommand extends Command {
 	constructor(client) {
 		super(client, {
@@ -119,7 +119,16 @@ module.exports = class ObstructionCommand extends Command {
 				}
 			}
 			this.client.games.delete(msg.channel.id);
+			let loser = [];
+			if (winner.id === msg.author.id) loser = opponent.id;
+			if (winner.id === opponent.id) loser = msg.author.id;
+
 			if (winner === 'time') return msg.say('Game ended due to inactivity.');
+			db.add(`won_${winner.id}`, 1);
+			db.add(`streak_${winner.id}`, 1);
+			db.add(`played_${msg.author.id}`, 1);
+			db.add(`played_${opponent.id}`, 1);
+			db.set(`streak_${loser}`, 0);
 			return msg.say(stripIndents`
 				Congrats, ${winner}! Your opponent has no possible moves left!
 
