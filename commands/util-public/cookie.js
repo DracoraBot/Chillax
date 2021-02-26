@@ -23,17 +23,17 @@ module.exports = class CookieCommand extends Command {
 	async run(msg, { target }) {
 		if (target.id === msg.author.id) return msg.say('Let\'s not get fat here... ')
     const sent = await db.fetch(`cookie_${msg.author.id}.sent`);
-    const recieved = await db.fetch(`cookie_${msg.author.id}.recieved`);
-		const targetR = await db.fetch(`cookie_${target.id}.recieved`);
+    const received = await db.fetch(`cookie_${msg.author.id}.received`);
+		const targetR = await db.fetch(`cookie_${target.id}.received`);
     //if (sent === null) db.set(`cookie_${msg.author.id}.sent`, 0);
-    //if (recieved === null) db.set(`cookie_${msg.author.id}.recieved`, 0);
+    //if (received === null) db.set(`cookie_${msg.author.id}.received`, 0);
 		await db.add(`cookie_${msg.author.id}.sent`, 1);
-		await db.add(`cookie_${target.id}.recieved`, 1);
+		await db.add(`cookie_${target.id}.received`, 1);
     const embed = new MessageEmbed()
       .setTitle(`Cookie Sent`)
       .setDescription(`**${msg.author}** sent a cookie to **${target}**!`)
       .addField('Sent', sent, true)
-      .addField('Recieved', recieved, true)
+      .addField('received', received, true)
       .setColor(msg.guild.me.displayHexColor)
     return msg.say(embed)
 	}

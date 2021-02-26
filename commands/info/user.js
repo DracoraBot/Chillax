@@ -47,10 +47,14 @@ module.exports = class UserCommand extends Command {
 		const userFlags = (await user.fetchFlags()).toArray();
 
 		// Get database info
-		const commandRan = db.get(`commands_${user.id}`);
-		const winStreak = db.get(`streak_${user.id}`);
-		const gamesWon = db.get(`won_${user.id}`);
-    const gamesPlayed = db.get(`played_${user.id}`);
+		const commandRan = await db.get(`commands_${user.id}`);
+		const winStreak = await db.get(`streak_${user.id}`);
+		const gamesWon = await db.get(`won_${user.id}`);
+    const gamesPlayed = await db.get(`played_${user.id}`);
+    if (commandRan === null) db.set(`commands_${user.id}`, 0);
+    if (winStreak === null) db.set(`streak_${user.id}`, 0)
+    if (gamesPlayed === null) db.set(`played_${user.id}`, 0);
+    if (gamesWon === null) db.set(`won_${user.id}`, 0);
     const ratio = gamesWon/gamesPlayed;
 
     const member = await msg.guild.members.fetch(user.id);
@@ -63,13 +67,11 @@ module.exports = class UserCommand extends Command {
     const userId = user.id;
     const isBot = user.bot ? 'Yes' : 'No';
 
-    if (commandRan === null) db.set(`commands_${user.id}`, 0);
-    if (gamesPlayed === null) db.set(`played_${user.id}`, 0);
 		const embed = new MessageEmbed()
 			//.setThumbnail(user.displayAvatarURL({ format: 'png', dynamic: true }))
 			.setAuthor(user.tag)
-			.addField('❯ Discord Information', `Joined: ${serverJoinDate}\nHighest: ${highestRole}\nHoist: ${hoistRole}`, true)
-			.addField('❯ User Information', `Username: ${user.username}\nDisc: ${user.discriminator}\nID: ${userId}\nJoined: ${discJoinDate}\n${user.bot ? 'Bot' : ''}`, true)
+			.addField('❯ Discord Information', `Joined: ${serverJoinDate}\nHighest: ${highestRole}`, true)
+			.addField('❯ User Information', `Username: ${user.username}\nTag: ${user.discriminator}\nID: ${userId}\nJoined: ${discJoinDate}\n${user.bot ? 'Bot' : ''}`, true)
 		if (msg.guild) {
 			try {
 				const roles = member.roles.cache
@@ -77,7 +79,7 @@ module.exports = class UserCommand extends Command {
 					.sort((a, b) => b.position - a.position)
 					.map(role => role.name);
 				embed
-          .addField('❯ Games Stats', `Commands: ${commandRan}\nGames Won: ${gamesWon}/${gamesPlayed}\nStreak: ${winStreak}\nRation: ${ratio.toFixed(2)}`, true)
+          .addField('❯ Games Stats', `Commands: ${commandRan}\nGames Won: ${gamesWon}/${gamesPlayed}\nStreak: ${winStreak}\nRatio: ${ratio.toFixed(2)}`, true)
 					.addField(`❯ Roles (${roles.length})`, roles.length ? trimArray(roles, 6).join(', ') : 'None')
 					.setColor(member.displayHexColor);
 					if (userFlags.length > 0) embed.addField('Badges', userFlags.map(flag => flags[flag]).join('\n'));

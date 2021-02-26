@@ -1,6 +1,7 @@
 require('dotenv').config();
-const { CHILLAX_TOKEN, OWNERS, CHILLAX_PREFIX, INVITE } = process.env;
+const { CHILLAX_TOKEN, OWNERS, CHILLAX_PREFIX, INVITE, PERSPECTIVE_API_KEY } = process.env;
 const path = require('path');
+const request = require('node-superfetch');
 const { Intents, MessageEmbed } = require('discord.js');
 const { oneLine } = require('common-tags');
 const Client = require('./structures/Client');
@@ -145,6 +146,7 @@ client.on('ready', async () => {
 });
 
 client.on('message', async msg => {
+	const text = msg.content;
 	if (msg.content.startsWith(CHILLAX_PREFIX)) {
   const commandRan = await db.fetch(`commands_${msg.author.id}`);
 		if (commandRan === null) await db.set(`commands_${msg.author.id}`, 0)
@@ -183,6 +185,20 @@ if (
 		.setColor(msg.guild.me.displayHexColor);
 	return msg.channel.send(embed);
 }
+	const { body } = await request
+		.post('https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze')
+		.query({ key: PERSPECTIVE_API_KEY })
+		.send({
+			comment: { text },
+			languages: ['en'],
+			requestedAttributes: { PROFANITY: {} }
+		});
+	const profanity = Math.round(body.attributeScores.PROFANITY.summaryScore.value * 100);
+	if (profanity >= 90) {
+		db.add(`profanity_${msg.author.id}`, 1);
+	} else {
+		return;
+	}
 	const hasText = Boolean(msg.content);
 	const hasImage = msg.attachments.size !== 0;
 	const hasEmbed = msg.embeds.length !== 0;
