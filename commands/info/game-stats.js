@@ -36,6 +36,8 @@ module.exports = class GameStatsCommand extends Command {
 		const hugs = await db.get(`hugs_${user.id}.sent`);
 		const rolePlayed = await db.get(`roleplay_${user.id}`);
 		const profanity = await db.get(`profanity_${user.id}`);
+		const globalMessages = await db.get(`messages_${user.id}`);
+		const serverMessages = await db.get(`messages_${msg.guild.id}_${user.id}`);
     const noU = await db.get(`noU_${user.id}`);
     if (noU === null) db.set(`noU_${user.id}`, 0);
 		if (profanity === null) db.set(`profanity_${user.id}`, 0);
@@ -47,24 +49,18 @@ module.exports = class GameStatsCommand extends Command {
     if (gamesPlayed === null) db.set(`played_${user.id}`, 0);
    	if (gamesWon === null) db.set(`won_${user.id}`, 0);
 		if (kissSent === null) db.set(`kiss_${user.id}.sent`, 0);
+		if (serverMessages === null) db.set(`messages_${msg.guild.id}_${user.id}`, 0)
+		if (globalMessages === null) db.set(`messages_${user.id}`, 0)
     	const ratio = gamesWon/gamesPlayed;
 
 
-				const embedNull = new MessageEmbed()
-					.setAuthor(user.tag)
-					.addField('❯ Games Stats', `Commands: ${commandRan}\nGames Won: 0\nGames Played: 0\nStreak: 0\nRatio: 0`, true)
-					.addField('❯ Roleplay Stats', `Cookies: 0\nHugs: 0\nKiss: 0\nCries: 0\nSlaps: 0\nHold: 0\nPogChamps: 0`, true)
-					.setColor(msg.guild.me.displayHexColor);
-				if (gamesPlayed === null && rolePlayed === null) {
-					msg.say(embedNull)
-				} else {
+
 					const embed = new MessageEmbed()
 							.setAuthor(user.tag)
 							.addField('❯ Games Stats', `Commands: ${commandRan}\nGames Won: ${gamesWon}\nGames Played: ${gamesPlayed}\nStreak: ${winStreak}\nRatio: ${ratio.toFixed(2)}`, true)
 							.addField('❯ Roleplay Stats', `Cookies: ${cookies}\nHugs: ${hugs}\nKiss: ${kissSent}\nCry: SOON`, true)
-							.addField('❯ Other Stats', `No u: ${noU}\nTables Flipped: 0\nProfanities: ${profanity}`, true)
+							.addField('❯ Other Stats', `No u: ${noU}\nTables Flipped: 0\nProfanities: ${profanity}\nGlobal Messages: ${globalMessages}\nServer Messages: ${serverMessages}`, true)
 							.setColor(msg.guild.me.displayHexColor);
 				return msg.embed(embed);
 		}
-	}
 };
