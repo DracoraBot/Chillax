@@ -146,13 +146,14 @@ client.on('ready', async () => {
 });
 
 client.on('message', async msg => {
+    	db.add(`messages_${msg.author.id}`, 1);
+    	db.add(`messages_${msg.guild.id}_${msg.author.id}`, 1);
 	const text = msg.content;
 	if (msg.content.startsWith(CHILLAX_PREFIX)) {
   const commandRan = await db.fetch(`commands_${msg.author.id}`);
 		if (commandRan === null) await db.set(`commands_${msg.author.id}`, 0)
 		db.add(`commands_${msg.author.id}`, 1);
 	} else {
-
 if (
 		(msg.content === `<@${client.user.id}>` || msg.content === `<@!${client.user.id}>`) &&
 	msg.channel.permissionsFor(msg.guild.me).has(['SEND_MESSAGES', 'EMBED_LINKS'])
@@ -185,6 +186,11 @@ if (
 		.setColor(msg.guild.me.displayHexColor);
 	return msg.channel.send(embed);
 }
+	const hasText = Boolean(msg.content);
+	const hasImage = msg.attachments.size !== 0;
+	const hasEmbed = msg.embeds.length !== 0;
+	if (msg.author.bot || (!hasText && !hasImage && !hasEmbed)) return;
+        /*
 	const { body } = await request
 		.post('https://commentanalyzer.googleapis.com/v1alpha1/comments:analyze')
 		.query({ key: PERSPECTIVE_API_KEY })
@@ -199,10 +205,7 @@ if (
 	} else {
 		return;
 	}
-	const hasText = Boolean(msg.content);
-	const hasImage = msg.attachments.size !== 0;
-	const hasEmbed = msg.embeds.length !== 0;
-	if (msg.author.bot || (!hasText && !hasImage && !hasEmbed)) return;
+    */
 	if (client.blacklist.user.includes(msg.author.id)) return;
 	const origin = client.phone.find(call => call.origin.id === msg.channel.id);
 	const recipient = client.phone.find(call => call.recipient.id === msg.channel.id);

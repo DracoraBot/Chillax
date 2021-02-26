@@ -25,25 +25,20 @@ module.exports = class InfoCommand extends Command {
 	}
 
 	async run(msg) {
+        const cloc = await this.client.registry.commands.get('cloc').cloc();
 		const invite = await this.client.generateInvite({ permissions });
-		//const repoURL = `https://github.com/${CHILLAX_GITHUB_REPO_USERNAME}/${CHILLAX_GITHUB_REPO_NAME}`;
 		const embed = new MessageEmbed()
 			.setColor(0x00AE86)
-			.setFooter(copyright.join('\n'))
 			.addField('❯ Servers', formatNumber(this.client.guilds.cache.size), true)
 			.addField('❯ Commands', formatNumber(this.client.registry.commands.size), true)
 			.addField('❯ Shards', formatNumber(this.client.options.shardCount), true)
 			.addField('❯ Home Server',
 				this.client.options.invite ? embedURL('Invite', this.client.options.invite) : 'None', true)
 			.addField('❯ Invite', embedURL('Add Me', invite), true)
-			//.addField('❯ Source Code', source ? embedURL('GitHub', repoURL) : 'N/A', true)
 			.addField('❯ Memory Usage', `${Math.round(process.memoryUsage().heapUsed / 1024 / 1024)}MB`, true)
 			.addField('❯ Uptime', moment.duration(this.client.uptime).format('d:hh:mm:ss'), true)
-			.addField('❯ Version', `v${version}`, true)
-			.addField('❯ Node.js', process.version, true)
-			.addField('❯ Discord.js', `v${djsVersion}`, true)
-			//.addField('❯ Commando', `v${commandoVersion}`, true)
-			//.addField('❯ Dependencies', Object.keys(deps).sort().join(', '));
+			.addField('❯ JS lines', `${formatNumber(Math.floor(cloc.JavaScript.code / 1000) * 1000)}+`, true)
+			.addField('❯ JSON lines', `${formatNumber(Math.floor(cloc.JSON.code / 1000) * 1000)}`, true)
 		return msg.embed(embed);
 	}
 };
