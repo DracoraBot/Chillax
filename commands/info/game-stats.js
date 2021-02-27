@@ -57,9 +57,9 @@ module.exports = class GameStatsCommand extends Command {
 
 					const embed = new MessageEmbed()
 							.setAuthor(user.tag)
-							.addField('❯ Games Stats', `Commands: ${commandRan}\nGames Won: ${gamesWon}\nGames Played: ${gamesPlayed}\nStreak: ${winStreak}\nRatio: ${ratio.toFixed(2)}`, true)
+							.addField('❯ Games Stats', `Games Won: ${gamesWon}\nGames Played: ${gamesPlayed}\nStreak: ${winStreak}\nRatio: ${ratio.toFixed(2)}`, true)
 							.addField('❯ Roleplay Stats', `Cookies: ${cookies}\nHugs: ${hugs}\nKiss: ${kissSent}\nCry: SOON`, true)
-							.addField('❯ Other Stats', `No u: ${noU}\nTables Flipped: 0\nGlobal Messages: ${globalMessages}\nServer Messages: ${serverMessages}`, true)
+							.addField('❯ Other Stats', `No u: ${noU}\nTables Flipped: 0\nCommands: ${commandRan}\nGlobal Messages: ${globalMessages}\nServer Messages: ${serverMessages}`, true)
 							.setColor(msg.guild.me.displayHexColor);
 				return msg.embed(embed);
 		}

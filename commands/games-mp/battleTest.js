@@ -83,19 +83,19 @@ module.exports = class TestCommand extends Command {
 				const frame = await loadImage(path.join(__dirname, '..', '..', 'assets', 'images', 'arena', frameID));
 				ctx.drawImage(frame, 0, 0);
 				if (i <= 17) {
-					const x = ((520 / 15) * i) - 50;
-					const y = (frame.height / 2) - 25;
-					const rotation = (520 / 15) * i;
+					const x = ((800 / 8) * i) - 6;
+					const y = (frame.height / 3) - 4;
+					//const rotation = (800 / 3) * i;
 					//const angle = rotation * (Math.PI / 180);
 					const originX = x + 25;
 					const originY = y + 25;
 					ctx.translate(originX, originY);
 					//ctx.rotate(-angle);
-					ctx.translate(-originX, -originY);
-					ctx.drawImage(avatar, x, y, 50, 50);
-					ctx.translate(originX, originY);
+					//ctx.translate(-originX, -originY);
+					//ctx.drawImage(avatar, x, y, 50, 50);
+					//ctx.translate(originX, originY);
 					//ctx.rotate(angle);
-					ctx.translate(-originX, -originY);
+					//ctx.translate(-originX, -originY);
 				}
 				if (i > 17) {
 					if (i <= 27) {
