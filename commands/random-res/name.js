@@ -2,7 +2,8 @@ const Command = require('../../structures/Command');
 const { list } = require('../../util/Util');
 const names = require('../../assets/json/name');
 const all = [].concat(names.male, names.female);
-const genders = ['male', 'female', 'both'];
+const genders = ['male', 'female'];
+const { MessageEmbed } = require('discord.js');
 
 module.exports = class NameCommand extends Command {
 	constructor(client) {
@@ -16,7 +17,7 @@ module.exports = class NameCommand extends Command {
 					key: 'gender',
 					prompt: `Which gender do you want to generate a name for? Either ${list(genders, 'or')}.`,
 					type: 'string',
-					default: 'both',
+					default: 'male',
 					oneOf: genders,
 					parse: gender => gender.toLowerCase()
 				}
@@ -25,8 +26,21 @@ module.exports = class NameCommand extends Command {
 	}
 
 	run(msg, { gender }) {
+		let genderSign = [];
+		let color = [];
+		if (gender == "male") {
+			color = "#00ffff";
+			genderSign = '♂️';
+		} else {
+			color = "#ff00ff";
+			genderSign = '♀️'
+		}
+
 		const lastName = names.last[Math.floor(Math.random() * names.last.length)];
-		if (gender === 'both') return msg.say(`${all[Math.floor(Math.random() * all.length)]} ${lastName}`);
-		return msg.say(`${names[gender][Math.floor(Math.random() * names[gender].length)]} ${lastName}`);
+		const embed = new MessageEmbed()
+			.setTitle(`${genderSign} | Name | ${genderSign}`)
+			.setColor(color)
+			.setDescription(`${names[gender][Math.floor(Math.random() * names[gender].length)]} ${lastName}`)
+		return msg.say(embed);
 	}
 };

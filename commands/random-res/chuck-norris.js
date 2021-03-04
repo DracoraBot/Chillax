@@ -1,5 +1,6 @@
 const Command = require('../../structures/Command');
 const request = require('node-superfetch');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = class ChuckNorrisCommand extends Command {
 	constructor(client) {
@@ -42,7 +43,10 @@ module.exports = class ChuckNorrisCommand extends Command {
 					firstName: name,
 					exclude: msg.channel.nsfw ? '' : '[explicit]'
 				});
-			return msg.say(body.value.joke);
+				const embed = new MessageEmbed()
+					.setColor(msg.guild.me.displayHexColor)
+					.setDescription(`${body.value.joke}`)
+				return msg.say(embed);
 		} catch (err) {
 			return msg.reply(`Oh no, an error occurred: \`${err.message}\`. Try again later!`);
 		}

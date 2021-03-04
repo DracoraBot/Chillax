@@ -1,5 +1,6 @@
 const Command = require('../../structures/Command');
 const facts = require('../../assets/json/fact-core');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = class FactCoreCommand extends Command {
 	constructor(client) {
@@ -20,6 +21,10 @@ module.exports = class FactCoreCommand extends Command {
 	}
 
 	run(msg) {
-		return msg.say(facts[Math.floor(Math.random() * facts.length)]);
+		const embed = new MessageEmbed()
+			.setTitle(`Fact Core`)
+			.setColor(msg.guild.me.displayHexColor)
+			.setDescription(`${facts[Math.floor(Math.random() * facts.length)]}`)
+		return msg.say(embed);
 	}
 };

@@ -32,7 +32,7 @@ module.exports = class ChannelCommand extends Command {
 
 	run(msg, { channel }) {
 		const embed = new MessageEmbed()
-			.setColor(0x00AE86)
+			.setColor(msg.guild.me.displayHexColor)
 			.addField('❯ Name', channel.type === 'dm' ? `@${channel.recipient.username}` : channel.name, true)
 			.addField('❯ ID', channel.id, true)
 			.addField('❯ NSFW', channel.nsfw ? 'Yes' : 'No', true)

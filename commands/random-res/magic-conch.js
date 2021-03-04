@@ -1,6 +1,7 @@
 const Command = require('../../structures/Command');
 const { stripIndents } = require('common-tags');
 const answers = require('../../assets/json/magic-conch');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = class MagicConchCommand extends Command {
 	constructor(client) {
@@ -30,9 +31,12 @@ module.exports = class MagicConchCommand extends Command {
 	}
 
 	run(msg, { question }) {
-		return msg.say(stripIndents`
-			_${question}_
-			🐚 ${answers[Math.floor(Math.random() * answers.length)]} 🐚
-		`);
+		const embed = new MessageEmbed()
+			.setTitle(`🐚 | Magic Conch  | 🐚`)
+			.setColor(msg.guild.me.displayHexColor)
+			.setDescription(stripIndents`
+				Q:_${question}_
+				A: 🐚 ${answers[Math.floor(Math.random() * answers.length)]} 🐚
+			`)
 	}
 };

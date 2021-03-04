@@ -1,5 +1,6 @@
 const Command = require('../../structures/Command');
 const jokes = require('../../assets/json/joke');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = class JokeCommand extends Command {
 	constructor(client) {
@@ -12,6 +13,9 @@ module.exports = class JokeCommand extends Command {
 	}
 
 	run(msg) {
-		return msg.say(jokes[Math.floor(Math.random() * jokes.length)]);
+		const embed = new MessageEmbed()
+			.setColor(msg.guild.me.displayHexColor)
+			.setDescription(`${jokes[Math.floor(Math.random() * jokes.length)]}`)
+		return msg.say(embed;
 	}
 };

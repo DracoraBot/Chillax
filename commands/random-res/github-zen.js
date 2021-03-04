@@ -1,5 +1,6 @@
 const Command = require('../../structures/Command');
 const request = require('node-superfetch');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = class GithubZenCommand extends Command {
 	constructor(client) {
@@ -23,7 +24,11 @@ module.exports = class GithubZenCommand extends Command {
 	async run(msg) {
 		try {
 			const { text } = await request.get('https://api.github.com/zen');
-			return msg.say(text);
+			const embed = new MessageEmbed()
+				.setTitle(`Github Zen`)
+				.setColor(msg.guild.me.displayHexColor)
+				.setDescription(text)
+			return msg.say(embed);
 		} catch (err) {
 			return msg.reply(`Oh no, an error occurred: \`${err.message}\`. Try again later!`);
 		}

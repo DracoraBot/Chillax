@@ -1,4 +1,5 @@
 const Command = require('../../structures/Command');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = class ChooseCommand extends Command {
 	constructor(client) {
@@ -21,6 +22,10 @@ module.exports = class ChooseCommand extends Command {
 	}
 
 	run(msg, { choices }) {
-		return msg.say(`I choose ${choices[Math.floor(Math.random() * choices.length)]}!`);
+		const embed = new MessageEmbed()
+			.setTitle(`Choice Breaker`)
+			.setColor(msg.guild.me.displayHexColor)
+			.setDescription(`I choose ${choices[Math.floor(Math.random() * choices.length)]}`)
+		return msg.say(embed)
 	}
 };

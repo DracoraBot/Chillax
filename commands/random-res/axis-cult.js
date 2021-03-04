@@ -1,5 +1,6 @@
 const Command = require('../../structures/Command');
 const teachings = require('../../assets/json/axis-cult');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = class AxisCultCommand extends Command {
 	constructor(client) {
@@ -25,6 +26,9 @@ module.exports = class AxisCultCommand extends Command {
 	}
 
 	run(msg) {
-		return msg.say(teachings[Math.floor(Math.random() * teachings.length)]);
+		const embed = new MessageEmbed()
+			.setColor(msg.guild.me.displayHexColor)
+			.addField(`${teachings[Math.floor(Math.random() * teachings.length)]}`)
+		return msg.say(embed);
 	}
 };

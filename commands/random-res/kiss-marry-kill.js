@@ -1,5 +1,6 @@
 const Command = require('../../structures/Command');
 const { shuffle } = require('../../util/Util');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = class KissMarryKillCommand extends Command {
 	constructor(client) {
@@ -59,6 +60,9 @@ module.exports = class KissMarryKillCommand extends Command {
 	run(msg, { first, second, third }) {
 		const kissFuck = msg.channel.nsfw ? 'fuck' : 'kiss';
 		const things = shuffle([first, second, third]);
-		return msg.say(`I'd ${kissFuck} ${things[0]}, marry ${things[1]}, and kill ${things[2]}.`);
+		const embed = new MessageEmbed()
+			.setColor(msg.guild.me.displayHexColor)
+			.setDescription(`${msg.author.username} would ${kissFuck} ${things[0]}, marry ${things[1]}, and kill ${things[2]}.`)
+		return msg.say(embed)
 	}
 };

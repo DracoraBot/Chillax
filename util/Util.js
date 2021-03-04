@@ -95,7 +95,9 @@ module.exports = class Util {
 		const ms = time - sec - (min * 60);
 		return `${min}:${sec.toString().padStart(2, '0')}.${ms.toFixed(4).slice(2)}`;
 	}
-
+	static formatDate(date) {
+	  return new Intl.DateTimeFormat("en-US").format(date)
+	}
 	static base64(text, mode = 'encode') {
 		if (mode === 'encode') return Buffer.from(text).toString('base64');
 		if (mode === 'decode') return Buffer.from(text, 'base64').toString('utf8') || null;

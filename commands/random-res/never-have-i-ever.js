@@ -1,7 +1,7 @@
 const Command = require('../../structures/Command');
 const { safe, nsfw } = require('../../assets/json/never-have-i-ever');
 const all = [...safe, ...nsfw];
-
+const { MessageEmbed } = require('discord.js');
 module.exports = class NeverHaveIEverCommand extends Command {
 	constructor(client) {
 		super(client, {
@@ -21,8 +21,24 @@ module.exports = class NeverHaveIEverCommand extends Command {
 		});
 	}
 
-	run(msg) {
-		if (msg.channel.nsfw) return msg.say(all[Math.floor(Math.random() * all.length)]);
-		return msg.say(safe[Math.floor(Math.random() * safe.length)]);
-	}
+	async run(msg) {
+        const nhie = new MessageEmbed()
+        	.setDescription(all[Math.floor(Math.random() * all.length)])
+        	.setColor(msg.guild.me.displayHexColor)
+					.setFooter(`NSFW: Enabled`);
+
+        const safeNhie = new MessageEmbed()
+					.setDescription(safe[Math.floor(Math.random() * safe.length)])
+          .setColor(msg.guild.me.displayHexColor)
+					.setFooter(`NSFW: Disabled`);
+
+		if (msg.channel.nsfw) return msg.channel.send({embed: nhie}).then(embedMessage => {
+    embedMessage.react("✅")
+    embedMessage.react("❌")
+})
+return msg.channel.send({embed: safeNhie}).then(embedMessage => {
+    embedMessage.react("✅")
+    embedMessage.react("❌")
+});
+    }
 };

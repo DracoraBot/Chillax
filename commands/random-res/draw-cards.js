@@ -1,5 +1,6 @@
 const Command = require('../../structures/Command');
 const Deck = require('../../structures/cards/Deck');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = class DrawCardsCommand extends Command {
 	constructor(client) {
@@ -32,6 +33,10 @@ module.exports = class DrawCardsCommand extends Command {
 		const deck = new Deck({ includeJokers: jokers });
 		const cards = deck.draw(amount);
 		const display = Array.isArray(cards) ? cards.map(c => c.display).join('\n') : cards.display;
-		return msg.reply(`${amount === 1 ? '' : '\n'}${display}`);
+		const embed = new MessageEmbed()
+			.setTitle(`Deck of cards`)
+			.setColor(msg.guild.me.displayHexColor)
+			.setDescription(`${amount === 1 ? '' : '\n'}${display}`)
+		return msg.say(embed);
 	}
 };

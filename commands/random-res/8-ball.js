@@ -1,6 +1,7 @@
 const Command = require('../../structures/Command');
 const { stripIndents } = require('common-tags');
 const answers = require('../../assets/json/8-ball');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = class EightBallCommand extends Command {
 	constructor(client) {
@@ -30,9 +31,13 @@ module.exports = class EightBallCommand extends Command {
 	}
 
 	run(msg, { question }) {
-		return msg.say(stripIndents`
-			_${question}_
-			🎱 ${answers[Math.floor(Math.random() * answers.length)]} 🎱
-		`);
+		const embed = new MessageEmbed()
+			.setTitle('🎱 | 8 Ball | 🎱')
+			.setColor(msg.guild.me.displayHexColor)
+			.setDescription(stripIndents`
+				Question: _${question}_
+				Answer: ${answers[Math.floor(Math.random() * answers.length)]}
+				`)
+		return msg.say(embed);
 	}
 };

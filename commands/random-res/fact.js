@@ -1,5 +1,6 @@
 const Command = require('../../structures/Command');
 const request = require('node-superfetch');
+const { MessageEmbed } = require('discord.js');
 
 module.exports = class FactCommand extends Command {
 	constructor(client) {
@@ -40,7 +41,11 @@ module.exports = class FactCommand extends Command {
 				fact = `${facts[0]}.`;
 				if (fact.length < 200 && facts.length > 1) fact += `${facts[1]}.`;
 			}
-			return msg.say(fact);
+			const embed = new MessageEmbed()
+				.setTitle(`Fact API`)
+				.setColor(msg.guild.me.displayHexColor)
+				.setDescription(fact)
+			return msg.say(embed);
 		} catch (err) {
 			return msg.reply(`Oh no, an error occurred: \`${err.message}\`. Try again later!`);
 		}

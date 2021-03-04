@@ -24,7 +24,13 @@ module.exports = class AdviceCommand extends Command {
 		try {
 			const { text } = await request.get('http://api.adviceslip.com/advice');
 			const body = JSON.parse(text);
-			return msg.say(`${body.slip.advice} (#${body.slip.id})`);
+			const embed = new MessageEmbed()
+				.setAuthor(`Advice Slip`, 'http://api.adviceslip.com/advice')
+				.setColor(msg.guild.me.displayHexColor)
+				.setDescription(`${body.slip.advice} (#${body.slip.id})`)
+				.setFooter(`Powered By: adviceslip.com`);
+			return msg.say(embed)
+
 		} catch (err) {
 			return msg.reply(`Oh no, an error occurred: \`${err.message}\`. Try again later!`);
 		}
