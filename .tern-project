@@ -16,12 +16,6 @@
       "dontLoad": "",
       "load": "",
       "modules": ""
-    },
-    "requirejs": {
-      "baseURL": "",
-      "paths": "",
-      "override": ""
-    },
-    "commonjs": {}
+    }
   }
 }
