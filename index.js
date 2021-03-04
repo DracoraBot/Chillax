@@ -41,7 +41,6 @@ client.registry
 		['edit-text', 'Text Manipulation'],
 		['edit-number', 'Number Manipulation'],
 		['voice', 'Play Audio'],
-		['music', 'Music'],
 		['remind', 'Reminders'],
 		['phone', 'Phone'],
 		['code', 'Coding Tools'],
@@ -146,6 +145,7 @@ client.on('ready', async () => {
 });
 
 client.on('message', async msg => {
+			db.add(`messages_${msg.guild.id}`, 1);
     	db.add(`messages_${msg.author.id}`, 1);
     	db.add(`messages_${msg.guild.id}_${msg.author.id}`, 1);
 	const text = msg.content;
